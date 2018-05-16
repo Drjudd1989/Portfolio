@@ -1,4 +1,5 @@
 Function verb-noun{
+    
     Param(
         [string[]]$Computername,
         [int]$MaxThreads = 64
@@ -9,7 +10,7 @@ Function verb-noun{
             Param(
                 $Computer
             )
-            #Command will go here
+            #Most of the Command will go here
             Write-Output $Computer
         }
         
@@ -58,29 +59,9 @@ Function verb-noun{
 
         #Closing Progress Bar
         Write-Progress -Activity "Multthreading" -Completed
-        
+
         #Necessary statements to ensure the runspace pool is no longer running in the background in Powershell.
         $RunspacePool.Close()
         $RunspacePool.Dispose()
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

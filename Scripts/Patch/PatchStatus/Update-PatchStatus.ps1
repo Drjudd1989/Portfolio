@@ -96,7 +96,7 @@ It is important to note that Powershell will not automatically pull a list of al
             }Else{
                 $WSUSServer = $Server
             }
-            $WSUSPort = If ($WSUSServer -match '^(PD|CG)wsus001.*$'){80}ElseIf($WSUSServer -match '^wsus.contoso.test$'){8530}Else{8531}
+            $WSUSPort = If ($WSUSServer -match '^wsus.*$'){80}ElseIf($WSUSServer -match '^wsus.contoso.test$'){8530}Else{8531}
             $WSUSHTTPS = If ($WSUSPort -eq 80 -or $WSUSPort -eq 8530){$False}Else{$True}
 
             # Grab the WSUSGroups Here and store them in an array

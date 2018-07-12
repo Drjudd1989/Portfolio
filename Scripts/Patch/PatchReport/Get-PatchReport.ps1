@@ -59,7 +59,6 @@ Function Get-PatchReport{
     [CmdletBinding(DefaultParameterSetName='WSUSGroup')]
     Param
     (
-        [ValidateSet("pdwsus001.contoso.com","cgwsus001.contoso.com","wsus.contoso.dev","wsus.contoso.qalab","wsus.contoso.qf")]
         [String]$Server,
 
         [Parameter(ParameterSetName='Computer')]

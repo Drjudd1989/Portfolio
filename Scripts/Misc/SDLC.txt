@@ -1,0 +1,39 @@
+Development Lifecycle
+ 
+When it comes to the lifecycle of a tool or script, these are the phases that such a script will go through. From the initial request, to the post deployment defect resolutions and feature requests, this page details the various phases of the lifecycle, and what those phases are looking for before moving on to the next phase.
+ 
+1. Request
+a.       Define Requirements
+                                                               i.      What does this request hope to accomplish?
+b.      Is there benefit to this request?
+c.       Is the opportunity cost to high?
+d.      Can compromises be made?
+2. Design
+a.       Sudo Code/Flow Charts
+b.      How will the tool be able to accomplish its purpose?
+c.       Provide prototype/early design to ensure that we are on the right path to meet requirements.
+d.      Develop a list of Acceptance Criteria that must be met before request is considered complete.
+e.      Team effort
+3. Development
+a.       Actual design of the code/creation of the tool.
+b.      Documentation
+                                                               i.      Comment based help file
+                                                             ii.      Code commenting
+4. Test
+a.       Does the tool perform the functions defined in the requirements
+b.      How does it perform?
+                                                               i.      Is resource utilization high while script is running?
+                                                             ii.      Ensure optimal execution time
+c.       Code and Documentation review
+d.      Requestor verification
+5. Deployment
+a.       Move tool to Production
+b.      Document in Wiki
+c.       Ensure request Acceptance Criteria has been met.
+d.      Communication to team to provide knowledge of new tool
+e.      Version Control – Coming Soon
+6. Post Deployment
+a.       Allow Script to remain in the Completed phase for 30 days prior to archiving request
+b.      Requests post deployment to follow the same phases, starting at Phase 1. Post Deployment requests can include the following:
+                                                               i.      Defect fixes
+                                                             ii.      Feature adds

@@ -1,0 +1,51 @@
+Standards and Procedures
+Last modified by Justin Beckerman on 2017/06/02 14:34
+Comments (0)
+Request Procedures
+General Procedures
+Code Standards
+Acceptance Criteria Standards
+Communication Standards
+Testing Standards
+Request Procedures
+
+Edit
+1. Send an E-mail to WSAAutomation@scottrade.com to submit request
+2. Request will be added to the WSA Automation Task Board.
+3. Additional questions may be asked of you before the next Automation meeting, including asking if you are able to attend to explain in more detail your request.
+4. WSA Automation meetings occur every Monday from 9:00AM - 10:00AM.
+5. You can view the status of your request by checking the WSA Automation Task Board.
+6. During the process, you will be asked to test the product to ensure it does meet your requirements and is easy to use.
+7. When request has been completed, you will be notified that it has been completed via email.
+General Procedures
+
+Edit
+1. Send e-mail to WSAAutomation@scottrade.com with request.
+2. Request added to WSA Automation Task Board.
+3. Requested attends Automation meeting for team to discuss.
+4. If approved, task gets moved to the Approved phase and awaits assignment.
+5. Tasks get assigned out to different levels.
+6. As tasks progress through the phases defined in the Development Lifecycle, the task will be moved within the Task Board.
+7. Levels 3 and 4 Automation Team Members perform testing and verification.
+8. Requestor will perform final testing to ensure tool performs as requested.
+9. Once testing is completed, version it and place in WSATools (and Sharepoint).
+10. Move task to Completed.
+11. Send an update to the WSA team to inform them of the new tool that has been deployed.
+Code Standards
+
+Edit
+*coming soon*
+Acceptance Criteria Standards
+
+Edit
+1. Code meets defined standards
+2. Code performs the correct function.
+3. Tool handles errors cleanly
+Communication Standards
+
+Edit
+*coming soon*
+Testing Standards
+
+Edit
+*coming soon*

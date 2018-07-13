@@ -1,0 +1,19 @@
+Powershell Engineer Levels
+
+Edit
+Beginner
+
+Edit
+Understand how to open up Powershell and run basic commands.
+Proficient
+
+Edit
+Deeper understanding of running commands, including how to pipe, filter, and assemble basic functions.
+Advanced
+
+Edit
+Able to develop advanced functions. Also able to perform troubleshooting and script reviews to ensure standards are met and 
+Expert
+
+Edit
+Advanced Troubleshooting and testing. Able to develop more in depth advanced functions/features.

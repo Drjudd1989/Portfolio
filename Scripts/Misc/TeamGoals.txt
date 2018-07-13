@@ -1,0 +1,7 @@
+The goal of the WSA Automation Team is the following:
+·         To produce tools to automate common tasks and improve internal processes
+·         To establish and maintain standards on how those tools are created and maintained, reducing risk introduced into the environment
+·         To strengthen documentation
+·         To train teammates on how to use and develop for Powershell
+·         To establish a peer review and approval process to ensure tools have business justification
+              ·         Knowledge Sharing

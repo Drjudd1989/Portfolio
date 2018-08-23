@@ -14,7 +14,7 @@
                     <Label x:Name="label1" Content="Computer Name" HorizontalAlignment="Left" Margin="70,164,0,0" VerticalAlignment="Top" Width="100"/>
                     <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="175,168,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="281"/>
                     <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="70,125,0,0" TextWrapping="Wrap" Text="    Please enter a computer name and click start to gather information" VerticalAlignment="Top" Width="386"/>
-                    <Button x:Name="Start" Content="Start" HorizontalAlignment="Left" Margin="70,202,0,0" VerticalAlignment="Top" Width="386" Height="81" Click="button_Click" FontSize="48"/>
+                    <Button x:Name="Start" Content="Start" HorizontalAlignment="Left" Margin="70,202,0,0" VerticalAlignment="Top" Width="386" Height="81" Click="button_Click" FontSize="24"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Information">
@@ -29,17 +29,52 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Health">
-                <Grid Background="#FFE5E5E5">
+                <Grid Background="#FFE5E5E5" RenderTransformOrigin="0.986,0.98" Margin="0,-4,0,4">
                     <Label x:Name="label2_Copy6" Content="ComputerName" HorizontalAlignment="Left" Margin="102,10,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label3" Content="Services Not Started" HorizontalAlignment="Left" Margin="32,176,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label3_Copy" Content="Healthy" HorizontalAlignment="Left" Margin="32,52,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label3_Copy1" Content="Memory Utilization" HorizontalAlignment="Left" Margin="262,114,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label3_Copy2" Content="SMB" HorizontalAlignment="Left" Margin="376,52,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label3_Copy3" Content="Protocol" HorizontalAlignment="Left" Margin="259,52,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label3_Copy4" Content="C: Drive Free Space" HorizontalAlignment="Left" Margin="32,83,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label3_Copy5" Content="Ping" HorizontalAlignment="Left" Margin="152,52,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label3_Copy6" Content="C: Drive Total Space" HorizontalAlignment="Left" Margin="259,83,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label3_Copy7" Content="CPU Utilization" HorizontalAlignment="Left" Margin="32,114,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label3_Copy8" Content="Last Boot Time" HorizontalAlignment="Left" Margin="32,145,0,0" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Temp Data">
-                <Label x:Name="label2_Copy7" Content="ComputerName" HorizontalAlignment="Left" Margin="102,10,0,0" VerticalAlignment="Top"/>
+                <Grid Background="#FFE5E5E5" RenderTransformOrigin="0.986,0.98" Margin="0,-4,0,4">
+                    <Label x:Name="label2_Copy7" Content="ComputerName" HorizontalAlignment="Left" Margin="102,10,0,0" VerticalAlignment="Top"/>
+                    <Button x:Name="button" Content="Clear Folder" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" Width="241" Height="56" FontSize="24"/>
+                    <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="186" Margin="10,36,0,0" VerticalAlignment="Top" Width="493" SelectionChanged="listBox_SelectionChanged">
+                        <ListBoxItem Content="Path1"/>
+                        <ListBoxItem Content="Path2" Selected="ListBoxItem_Selected"/>
+                        <ListBoxItem Content="Path3"/>
+                        <ListBoxItem Content="Path4"/>
+                        <ListBoxItem Content="Path5"/>
+                        <ListBoxItem Content="Path6"/>
+                        <ListBoxItem Content="Path7"/>
+                    </ListBox>
+                    <Button x:Name="button_Copy" Content="Clear All" HorizontalAlignment="Left" Margin="256,227,0,0" VerticalAlignment="Top" Width="247" Height="56" FontSize="24"/>
+                </Grid>
             </TabItem>
             <TabItem Header="Users">
-                <Label x:Name="label2_Copy8" Content="ComputerName" HorizontalAlignment="Left" Margin="102,10,0,0" VerticalAlignment="Top"/>
+                <Grid Background="#FFE5E5E5" RenderTransformOrigin="0.986,0.98" Margin="0,-4,0,4">
+                    <Label x:Name="label2_Copy8" Content="ComputerName" HorizontalAlignment="Left" Margin="102,10,0,0" VerticalAlignment="Top"/>
+                    <ListBox x:Name="listBox1" HorizontalAlignment="Left" Height="198" VerticalAlignment="Top" Width="493" Margin="10,36,0,0">
+                        <ListBoxItem Content="User1"/>
+                        <ListBoxItem Content="User2"/>
+                        <ListBoxItem Content="User3"/>
+                        <ListBoxItem Content="User4"/>
+                        <ListBoxItem Content="User5"/>
+                        <ListBoxItem Content="User6"/>
+                    </ListBox>
+                    <Button x:Name="button1" Content="Delete User" HorizontalAlignment="Left" Margin="10,239,0,0" VerticalAlignment="Top" Width="493" Height="44" FontSize="24"/>
+                </Grid>
             </TabItem>
         </TabControl>
+
 
     </Grid>
 </Window>

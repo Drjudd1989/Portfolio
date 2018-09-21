@@ -16,9 +16,9 @@ Get-ADGroupMembership -name testuser -Server contoso.qalab | export-csv c:\temp\
 
 Outputs a listing of all of the memberships that the user "testuser", which lives in contoso.qalab, belongs to to a CSV file located in C:\Temp (C:\temp\Memberships.csv) on the local machine
 .EXAMPLE
-Get-ADGroupMembership -name soomsvc$ -Server contoso.dev
+Get-ADGroupMembership -name GMSA$ -Server contoso.dev
 
-Outputs a listing of all of the memberships that the Group Managed Service Account "Soomsvc$" in contoso.dev belongs too.
+Outputs a listing of all of the memberships that the Group Managed Service Account "GMSA$" in contoso.dev belongs too.
 .INPUTS
 None. This Cmdlet does not accept any pipeline input.
 .OUTPUTS

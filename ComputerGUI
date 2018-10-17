@@ -78,3 +78,15 @@
 
     </Grid>
 </Window>
+
+
+[adsi]$LocalAdmin = "WinNT://$env:COMPUTERNAME/Administrators,group"
+Foreach ($Member in $LocalAdmin.Invoke('Members')) {
+    $Name = $Member.GetType().InvokeMember('Name', 'GetProperty', $null, $Member, $null)
+    [pscustomobject]@{
+        Name = $Name
+        Type = $Member.GetType().InvokeMember('Class', 'GetProperty', $null, $Member, $null)
+        SID = [Security.Principal.NTAccount]::new($Name).Translate([Security.Principal.SecurityIdentifier])
+        Path = $Member.GetType().InvokeMember('AdsPath', 'GetProperty', $null, $Member, $null)
+    }
+}

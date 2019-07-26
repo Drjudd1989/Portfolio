@@ -1,4 +1,4 @@
-﻿function Get-PDADServer{
+﻿function Get-ADServer{
 
 <#
     .SYNOPSIS
@@ -20,15 +20,15 @@
     .PARAMETER  ConnectivityCheck
     Attempt to establish a connection with each computer object and return a value based on if the connection was successful or not. Connection attempts include DCOM and WSMAN.
     .EXAMPLE
-    Get-PDADServer
+    Get-ADServer
 
     Returns a list of all computer objects for the local domain
     .EXAMPLE
-    Get-PDADServer -server contoso.com -credential (Get-Credential) -filteros Windows
+    Get-ADServer -server contoso.com -credential (Get-Credential) -filteros Windows
 
     Asks for credentials to be specified and will then return a list of all Windows computer objects in the Contoso.com domain
     .EXAMPLE
-    Get-PDADServer -server contoso.com -filteros Windows -enabled -pingcheck -connectivitycheck
+    Get-ADServer -server contoso.com -filteros Windows -enabled -pingcheck -connectivitycheck
 
     Returns a list of all enabled Windows computer objects in Contoso.com and checks to see if those objects respond to a ping and can be connected too.
     .EXAMPLE

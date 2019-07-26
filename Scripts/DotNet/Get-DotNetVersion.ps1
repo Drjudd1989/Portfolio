@@ -1,5 +1,4 @@
-Function Get-DotNetVersion {
-    
+﻿Function Get-DotNetVersion {
     <#
     .Synopsis
        Gets all versions of the .Net framework currently installed.
@@ -7,23 +6,18 @@ Function Get-DotNetVersion {
        Gets all versions of the .Net framework currently installed on one or more computers. This is a multithreaded Cmdlet.
     .PARAMETER ComputerName
        Specify one or more Fully Qualified Domain Names (FQDN).
-
        Ex: 'server1.contoso.com'
     .PARAMETER MaxThreads
        Specify the maximum number of threads to be used by this Cmdlet.
     .EXAMPLE
        C:\PS>Get-DotNetVersion
-
        Gets the installed versions of the .Net framework for your local computer.
     .EXAMPLE
        C:\PS>Get-DotNetVersion -Computername 'server1.contoso.com','server2.contoso.com','dc1.contoso.com'
-
        Gets the installed versions of the .Net framework for server1.contoso.com, server2.contoso.com and dc1.contoso.com.
     .EXAMPLE
        C:\PS>$Servers = Get-ADComputer -Filter {OperatingSystem -like '*Windows Server*'} | Select -ExpandProperty DNSHostName
        C:\PS>Get-DotNetVersion -Computername $Servers
-
-
        Gets the installed versions of the .Net framework for all Windows servers in the current domain.
     .INPUTS
        None. This Cmdlet does not accept any pipeline input.
@@ -33,7 +27,7 @@ Function Get-DotNetVersion {
 
     [CmdletBinding()]
     Param (
-        [String[]]$Computername = $([System.Net.Dns]::GetHostEntry('').HostName),
+        [String[]]$Computername = $Env:COMPUTERNAME,
 
         [Int32]$MaxThreads = 64
     )
@@ -83,6 +77,11 @@ Function Get-DotNetVersion {
                     393297 {'4.6'}
                     394254 {'4.6.1'}
                     394271 {'4.6.1'}
+                    394806 {'4.6.2'}
+                    460805 {'4.7'}
+                    461310 {'4.7.1'}
+                    461814 {'4.7.2'}
+
                 }
             }
 
@@ -220,9 +219,10 @@ Function Get-DotNetVersion {
     } #Process
 
     End {
-        While ($($RunspaceCollection | where {$_.Handle.IsCompleted -ne 'Completed'}).count -ne 0) {
+        While ($($RunspaceCollection | where {$_.Handle.IsCompleted -ne 'Completed'}).count -ne 0){
             Write-Progress -Activity 'Getting .Net Version' -Status "Waiting for $(($RunspaceCollection | where {$_.Handle.IsCompleted -ne 'Completed'}).count) threads to finish"
             Start-Sleep -Milliseconds 200
+            
         }
 
         Write-Progress -Activity 'Getting .Net Version' -Status 'Retrieving results'

@@ -1,4 +1,4 @@
-﻿function Get-PDADUser{
+﻿function Get-ADUser{
 
 <#
     .SYNOPSIS

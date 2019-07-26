@@ -14,15 +14,15 @@
     .PARAMETER  FilterUser
     Filter results by the a partial or full username.
     .EXAMPLE
-    Get-PDADUser
+    Get-ADUser
 
     Returns a list of all User objects for the local domain
     .EXAMPLE
-    Get-PDADServer -server contoso.com -credential (Get-Credential)
+    Get-ADServer -server contoso.com -credential (Get-Credential)
 
     Asks for credentials to be specified and will then return a list of all user objects in the Contoso.com domain
     .EXAMPLE
-    Get-PDADServer -server contoso.com -filteruser "TestUser"
+    Get-ADServer -server contoso.com -filteruser "TestUser"
 
     Returns a list of all user objects with a name like TestUser in Contoso.com
     .EXAMPLE

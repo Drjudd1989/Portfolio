@@ -1,4 +1,4 @@
-﻿function Test-PDADCredential {
+﻿function Test-ADCredential {
     <#
     .Synopsis
        Tests an Active Directory credential.
@@ -7,7 +7,7 @@
     .PARAMETER Credential
         A Credential object from Get-Credential.
     .EXAMPLE
-        Test-PDADCredential -credential (Get-Credential)
+        Test-ADCredential -credential (Get-Credential)
 
         Prompts for a credential object and will test if that credential object is valid or not.
     #>

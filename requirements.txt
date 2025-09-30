@@ -1,0 +1,4 @@
+google-generativeai
+wikipedia
+python-dotenv
+gradio

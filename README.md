@@ -1,61 +1,69 @@
-# Conversational RAG Web Application with Google Gemini and Wikipedia
+# Fully Offline Conversational RAG Chatbot
 
-This project is a web-based implementation of a conversational Retrieval-Augmented Generation (RAG) system. It uses Google's Gemini Pro as the Large Language Model (LLM) and Wikipedia as the external knowledge base. The web interface is built with Gradio and supports back-and-forth conversations.
+This project is a fully offline, conversational Retrieval-Augmented Generation (RAG) chatbot. It uses a local vector database built from scraped website content and a local Large Language Model (LLM) to function without any internet connection after the initial setup.
 
-## How it works
+The interface is a web-based chat application built with Gradio. This version has been corrected to use a proper conversational pipeline for higher quality responses.
 
-The system takes a user's question from a chat interface, searches for relevant information on Wikipedia, and then uses that context, along with the history of the conversation, to generate a contextual and informed answer using Google Gemini Pro. The answer is then displayed back to the user in the chat interface, and the conversation can continue.
+## How it Works
+
+The system is composed of two main parts:
+
+1.  **Data Preparation (`prepare_data.py`):** A script that you run once to scrape content from specified URLs, process the text, create vector embeddings using Sentence-Transformers, and save everything into a local FAISS database.
+2.  **Chat Application (`app.py`):** The main Gradio application that loads the local vector database and a local conversational LLM (`microsoft/DialoGPT-medium`). When you ask a question, it retrieves relevant context from the database and injects it into the conversation to generate a fact-grounded answer with the local LLM.
 
 ## Prerequisites
 
 - Python 3.7 or higher
-- A Google Gemini API key
+- `git` and `git-lfs` (recommended for downloading language models)
 
-## Setup
+## Setup and Usage
+
+The setup is a two-step process: first, prepare the data, and second, run the application.
+
+### Step 1: Prepare the Data
+
+This step scrapes websites and builds your local knowledge base. **This step requires an internet connection.**
 
 1.  **Clone the repository:**
-
     ```bash
-    git clone https://github.com/your-username/simple-rag-gemini-wikipedia.git
-    cd simple-rag-gemini-wikipedia
+    git clone https://github.com/your-username/offline-rag-chatbot.git
+    cd offline-rag-chatbot
     ```
 
-2.  **Install the dependencies:**
+2.  **(Optional) Customize URLs:**
+    Open `prepare_data.py` and modify the `URLS_TO_SCRAPE` list to include the websites you want the chatbot to be knowledgeable about.
 
+3.  **Install Dependencies:**
+    Install all the necessary Python packages.
     ```bash
     pip install -r requirements.txt
     ```
 
-3.  **Create a `.env` file:**
-
-    Create a file named `.env` in the root of the project directory and add your Google Gemini API key to it:
-
+4.  **Run the Data Preparation Script:**
+    This will scrape the websites, download a sentence-embedding model, and build the vector database.
+    ```bash
+    python prepare_data.py
     ```
-    GEMINI_API_KEY=your_gemini_api_key
+    This process will create two files: `faiss_index.bin` (the vector database) and `text_chunks.pkl` (the raw text for reference).
+
+### Step 2: Run the Offline Chatbot
+
+After the data is prepared, you can run the chatbot. **The very first time you run this, it will download the local LLM, which requires an internet connection.** After that, it will be fully offline.
+
+1.  **Launch the Application:**
+    ```bash
+    python app.py
     ```
+    The script will load the vector database and download/load the local conversational LLM (`microsoft/DialoGPT-medium`). This might take some time and memory, especially on the first run.
 
-    Replace `your_gemini_api_key` with your actual API key.
+2.  **Access the Chatbot:**
+    Once the models are loaded, a local URL will be displayed (e.g., `http://127.0.0.1:7860`). Open this URL in your web browser to start chatting with your offline RAG assistant.
 
-## Usage
+## How the Correction Improved the Chatbot
 
-To run the conversational RAG web application, execute the following command in your terminal:
+The previous version used a base text-generation model with a complex prompt, which resulted in incoherent responses. This version has been fixed by:
+- **Using a Conversational Model:** Switching to `microsoft/DialoGPT-medium`, a model specifically fine-tuned for dialogue.
+- **Using the Correct Pipeline:** Employing the `conversational` pipeline from the `transformers` library, which correctly manages chat history and context.
+- **Improved Context Injection:** The retrieved context is now cleanly prepended to the user's question, guiding the model more effectively without confusing it.
 
-```bash
-python rag_from_wikipedia.py
-```
-
-This will start a local web server. You can access the application by opening the URL provided in the terminal (usually `http://127.0.0.1:7860`) in your web browser.
-
-The chat interface allows you to have a continuous conversation. You can ask follow-up questions, and the model will use the history to understand the context.
-
-### Example
-
-Once the application is running, you will see a chat interface.
-
-**User:** `What is a RAG system?`
-
-**Assistant:** `A Retrieval-Augmented Generation (RAG) system is a type of artificial intelligence model that combines a retrieval system with a generative model. The retrieval system first finds relevant information from a large dataset, such as Wikipedia, and then the generative model uses that information to create a more accurate and contextually relevant answer to a user's question.`
-
-**User:** `How does it help with hallucinations?`
-
-**Assistant:** `RAG helps reduce hallucinations by grounding the generative model in factual information retrieved from an external knowledge base. By providing relevant and verifiable context, the model is less likely to generate false or misleading information, as its responses are based on the provided text rather than just its internal pre-trained knowledge.`
+These changes result in a much more functional and coherent chatbot.

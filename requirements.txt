@@ -1,4 +1,7 @@
-google-generativeai
-wikipedia
-python-dotenv
 gradio
+beautifulsoup4
+faiss-cpu
+sentence-transformers
+transformers
+torch
+python-dotenv

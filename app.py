@@ -3,28 +3,26 @@ import faiss
 from sentence_transformers import SentenceTransformer
 import pickle
 import numpy as np
-from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
-from transformers.pipelines.conversational import Conversation
+import google.generativeai as genai
 import os
+from dotenv import load_dotenv
 
 # --- Configuration ---
 FAISS_INDEX_PATH = "faiss_index.bin"
 TEXT_CHUNKS_PATH = "text_chunks.pkl"
 EMBEDDING_MODEL = 'all-MiniLM-L6-v2'
-# Switched to a model fine-tuned for dialogue for better conversational quality.
-LOCAL_LLM_MODEL = "microsoft/DialoGPT-medium"
 
 # --- Global Variables ---
 retriever = None
-llm_pipeline = None
+genai_model = None
 
-def initialize_offline_systems():
-    """Loads all necessary models and data for offline use."""
-    global retriever, llm_pipeline
+def initialize_systems():
+    """Loads all necessary models and data."""
+    global retriever, genai_model
 
-    print("--- Initializing Offline Systems ---")
+    print("--- Initializing Systems ---")
 
-    # 1. Load Vector DB and Text Chunks
+    # 1. Load Local Vector DB and Text Chunks
     print("Loading local vector database...")
     if not os.path.exists(FAISS_INDEX_PATH) or not os.path.exists(TEXT_CHUNKS_PATH):
         print("\n[ERROR] Vector database not found!")
@@ -47,23 +45,24 @@ def initialize_offline_systems():
     }
     print("Vector database and retriever are ready.")
 
-    # 4. Load Local Conversational LLM
-    print(f"\nLoading local LLM for conversation: '{LOCAL_LLM_MODEL}'...")
-    print("This may take some time and download the model if not cached.")
+    # 4. Configure Google Gemini API
+    print("\nConfiguring Google Gemini API...")
     try:
-        # Use the 'conversational' pipeline for chatbot-like interactions
-        llm_pipeline = pipeline('conversational', model=LOCAL_LLM_MODEL)
-        print("✅ Local conversational LLM loaded successfully.")
+        load_dotenv()
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY not found in .env file or environment variables.")
+        genai.configure(api_key=api_key)
+        genai_model = genai.GenerativeModel('gemini-pro')
+        print("✅ Google Gemini API configured successfully.")
     except Exception as e:
-        print(f"\n[ERROR] Failed to load the local LLM: {e}")
-        print("Please ensure you have a stable internet connection for the initial download,")
-        print("and that you have 'torch' and 'transformers' installed correctly.")
-        raise gr.Error(f"Failed to load local LLM: {LOCAL_LLM_MODEL}. See console for details.")
+        print(f"\n[ERROR] Failed to configure Gemini API: {e}")
+        raise gr.Error(f"Failed to configure Gemini API. Please check your API key and see console for details.")
 
     print("\n--- All systems initialized. Application is ready. ---")
 
-def retrieve_context(query, k=2):
-    """Retrieves relevant text chunks from the vector DB based on the query."""
+def retrieve_context_from_db(query, k=3):
+    """Retrieves relevant text chunks from the local vector DB based on the query."""
     if not retriever:
         return "Retriever not initialized."
 
@@ -74,59 +73,57 @@ def retrieve_context(query, k=2):
     retrieved_chunks = [retriever["chunks"][i] for i in indices[0]]
     return "\n---\n".join(retrieved_chunks)
 
-def conversational_offline_rag(message, history):
+def conversational_rag_with_gemini(message, history):
     """
-    The main RAG pipeline for the offline conversational chatbot.
-    This version uses a proper conversational pipeline.
+    The main RAG pipeline using a local DB for retrieval and Gemini for generation.
     """
-    if not llm_pipeline:
-        return "LLM not initialized. Please check the console for errors."
+    if not genai_model:
+        return "Gemini model not initialized. Please check the console for errors."
 
-    # 1. Retrieve context from the local DB based on the user's latest message
-    context = retrieve_context(message)
+    # 1. Retrieve context from the local DB
+    context = retrieve_context_from_db(message)
 
-    # 2. Inject the context into the conversation.
-    # We prepend the context to the user's message to guide the model.
-    # This is a simple but effective way to ground the model's response.
-    contextual_message = f"""Based on the following context, answer the user's question.
-Context: "{context}"
+    # 2. Build conversation history string
+    prompt_history = ""
+    for user_turn, bot_turn in history:
+        prompt_history += f"User: {user_turn}\nAssistant: {bot_turn}\n"
 
-Question: {message}
+    # 3. Construct the prompt for Gemini
+    full_prompt = f"""You are a helpful assistant. Please answer the user's current question based on the provided context from your local knowledge base and the ongoing conversation history.
+
+Conversation History:
+{prompt_history}
+
+Local Knowledge Base Context:
+"{context}"
+
+Current Question:
+{message}
 """
 
-    # 3. Use the conversational pipeline, providing the history
-    # The pipeline manages the conversation object internally.
-    # We build the conversation turn by turn from the history provided by Gradio.
-    conversation = Conversation()
-    for user_turn, bot_turn in history:
-        conversation.add_user_input(user_turn)
-        conversation.mark_processed() # Mark the user input as processed
-        conversation.append_response(bot_turn)
-
-    # Add the new user message (with context) to the conversation
-    conversation.add_user_input(contextual_message)
-
-    # Get the model's response
-    result = llm_pipeline(conversation)
-
-    # The pipeline returns the entire conversation object. We need the last response.
-    return result.generated_responses[-1]
+    try:
+        # 4. Generate response from Gemini
+        response = genai_model.generate_content(full_prompt)
+        return response.text
+    except Exception as e:
+        return f"An error occurred while communicating with the Gemini API: {e}"
 
 # --- Gradio UI ---
 with gr.Blocks(theme=gr.themes.Soft()) as iface:
-    gr.Markdown("# 🤖 Fully Offline Conversational RAG Chatbot")
+    gr.Markdown("# 🤖 Conversational RAG Chatbot (Local DB + Gemini LLM)")
     gr.Markdown(
-        "This chatbot uses a local vector database (from scraped websites) and a local LLM (`microsoft/DialoGPT-medium`) to answer your questions. "
-        "It is fully offline after the initial setup. Run `python prepare_data.py` to build the database."
+        "This chatbot uses a **local vector database** (built from scraped websites) for information retrieval "
+        "and **Google's Gemini Pro** for response generation. "
+        "Run `prepare_data.py` to build the local database."
     )
 
     chatbot = gr.Chatbot(height=500)
     msg = gr.Textbox(placeholder="Ask a question about the scraped content...", container=False, scale=7)
     clear = gr.Button("Clear Conversation")
 
-    msg.submit(conversational_offline_rag, [msg, chatbot], chatbot)
+    msg.submit(conversational_rag_with_gemini, [msg, chatbot], chatbot)
     clear.click(lambda: None, None, chatbot, queue=False)
 
 if __name__ == "__main__":
-    initialize_offline_systems()
+    initialize_systems()
     iface.queue().launch()

@@ -2,6 +2,6 @@ gradio
 beautifulsoup4
 faiss-cpu
 sentence-transformers
-transformers
-torch
 python-dotenv
+google-generativeai
+wikipedia

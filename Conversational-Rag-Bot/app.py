@@ -78,18 +78,53 @@ def retrieve_context_from_db(query, k=3):
     return "\n---\n".join(retrieved_chunks)
 
 def conversational_rag_with_gemini(message, history):
-    """The main RAG pipeline using a selected local DB and Gemini."""
-    if not genai_model:
-        return "Error: Gemini model not initialized. Check API key."
-    if not retriever:
-        # This will be shown in the chatbot window if no KB is loaded
-        return "Error: No knowledge base has been loaded. Please select one from the dropdown and click 'Load'."
+    """The main RAG pipeline using a selected local DB and Gemini.
 
-    context = retrieve_context_from_db(message)
+    Returns the updated chat history in Gradio 'messages' format (list of dicts with
+    'role' and 'content').
+    """
+    # Gradio Chatbot uses a list-of-lists/tuples format: [[user, assistant], ...]
+    # Normalize history and build prompt from prior turns safely.
+    if history is None:
+        history = []
 
+    # Build prompt_history from prior turns. Support multiple history shapes
     prompt_history = ""
-    for user_turn, bot_turn in history:
-        prompt_history += f"User: {user_turn}\nAssistant: {bot_turn}\n"
+    for turn in history:
+        # turn can be [user, assistant] or (user, assistant) or a dict-like
+        user_text = None
+        assistant_text_prior = None
+        if isinstance(turn, (list, tuple)) and len(turn) >= 1:
+            user_text = turn[0]
+            if len(turn) >= 2:
+                assistant_text_prior = turn[1]
+        elif isinstance(turn, dict):
+            # support dict shape if present
+            if turn.get("role") == "user":
+                user_text = turn.get("content")
+            elif turn.get("role") == "assistant":
+                assistant_text_prior = turn.get("content")
+            else:
+                # try to extract both
+                user_text = turn.get("user") or turn.get("content")
+
+        if user_text:
+            prompt_history += f"User: {user_text}\n"
+        if assistant_text_prior:
+            prompt_history += f"Assistant: {assistant_text_prior}\n"
+
+    # Early error handling: return a tuple-style reply so Gradio doesn't error
+    if not genai_model:
+        assistant_text = "Error: Gemini model not initialized. Check API key."
+        history.append([message, assistant_text])
+        return history
+    if not retriever:
+        assistant_text = "Error: No knowledge base has been loaded. Please select one from the dropdown and click 'Load'."
+        history.append([message, assistant_text])
+        return history
+
+    # Retrieve context and build prompt
+    context = retrieve_context_from_db(message)
 
     full_prompt = f"""You are a helpful assistant. Please answer the user's current question based on the provided context from the '{retriever['name']}' knowledge base and the ongoing conversation history.
 
@@ -102,11 +137,24 @@ Knowledge Base Context:
 Current Question:
 {message}
 """
+
     try:
         response = genai_model.generate_content(full_prompt)
-        return response.text
+        # Try common response shapes
+        if hasattr(response, "text"):
+            assistant_text = response.text
+        elif hasattr(response, "output"):
+            assistant_text = response.output
+        elif isinstance(response, dict) and "candidates" in response and len(response["candidates"]) > 0:
+            assistant_text = response["candidates"][0].get("text")
+        else:
+            assistant_text = str(response)
     except Exception as e:
-        return f"An error occurred with the Gemini API: {e}"
+        assistant_text = f"An error occurred with the Gemini API: {e}"
+
+    # Append the new turn as [user, assistant] so Gradio Chatbot accepts it
+    history.append([message, assistant_text])
+    return history
 
 # --- System Initialization ---
 def initialize_gemini():
